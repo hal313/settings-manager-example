@@ -1,6 +1,6 @@
 {
   "name": "settings-manager-example",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An example use of settings-manager with Promisifish.",
   "main": "settings-manager-example.js",
   "scripts": {
