@@ -12,8 +12,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@hal313/promiseifyish": "^1.0.9",
-    "@hal313/settings-manager": "^1.0.9",
+    "@hal313/promiseifyish": "^1.0.10",
+    "@hal313/settings-manager": "^1.0.11",
     "auto-changelog": "^1.13.0"
   },
   "dependencies": {}
