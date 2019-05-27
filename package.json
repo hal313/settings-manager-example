@@ -1,0 +1,20 @@
+{
+  "name": "settings-manager-example",
+  "version": "1.0.0",
+  "description": "An example use of settings-manager with Promisifish.",
+  "main": "settings-manager-example.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "cp node_modules/@hal313/settings-manager/dist/SettingsManager.es6.js docs/SettingsManager.es6.js  && cp node_modules/@hal313/promiseifyish/dist/Promiseifyish.es6.js docs/Promiseifyish.es6.js",
+    "site": "npm run dist",
+    "release": "ext/scripts/release.sh --skip-push"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@hal313/promiseifyish": "^1.0.9",
+    "@hal313/settings-manager": "^1.0.9",
+    "auto-changelog": "^1.13.0"
+  },
+  "dependencies": {}
+}

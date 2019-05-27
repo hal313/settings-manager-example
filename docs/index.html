@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <!-- FontAwesome CDN  -->
+        <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+        <style>
+            .external-link-indicator {
+                font-size: xx-small;
+                vertical-align: super;
+            }
+            .code-sample-container {
+                margin: 2em 1em;
+            }
+        </style>
+
+        <title>SettingsManager / Promiseifyish Example</title>
+    </head>
+    <body>
+        <div class="jumbotron">
+            <h1 class="display-4">SettingsManager / Promiseifyish Example</h1>
+            <p class="lead">Example uses of the
+                <a href="https://github.com/hal313/settings-manager" target="github">SettingsManager <i class="fas fa-external-link-alt external-link-indicator"></i></a> library
+                and <a href="https://github.com/hal313/promiseifyish" target="github">Promiseifyish <i class="fas fa-external-link-alt external-link-indicator"></i></a> library
+            </p>
+        </div>
+
+        <div class="container">
+
+            <p>
+                This page illustrates the general use of <a href="https://github.com/hal313/settings-manager">SettingsManager</a>, as well as
+                an example with a promiseified version, using <a href="https://github.com/hal313/promiseifyish">Promiseifyish</a>.
+            </p>
+
+            <p>
+                There are some advantages to using a promise-style API over standard callback style. In general, the code flows better and is easier
+                to read with Promises.
+            </p>
+
+            <p>
+                Compare the two code samples below to see the difference between the callback style and the promise style.
+            </p>
+
+            <div class="dropdown-divider"></div>
+
+
+            <p>Consider the typical use of the SettingsManager:</p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card code-sample-container">
+                        <div class="card-header">Settings Manager Code</div>
+                        <div class="card-body">
+                            <pre><code class="prettyprint lang-js">
+        // Handlers
+        function onSettingsLoaded(settings) {
+            console.log('loaded', settings);
+        }
+        function onSettingsSaved() {
+            console.log('settings saved');
+        }
+        function onError(error) {
+            console.log('error:', error);
+        }
+
+        // Start with a load
+        var settingsManager = new SettingsManager();
+        settingsManager.load(function onLoad(settings) {
+            // Handle the load response and start a save
+            onSettingsLoaded(settings);
+            settingsManager.save({one: 1, two: 'two'}, function onSave() {
+                // Handle the save response and start another load
+                onSettingsSaved();
+                settingsManager.load(function onLoad(settings) {
+                    // Handle the load response and start another save
+                    onSettingsLoaded(settings);
+                    settingsManager.save({three: 3, two: 2}, function onSave() {
+                        // Handle the save response and start another load
+                        onSettingsSaved();
+                        settingsManager.load(function onLoad(settings) {
+                            // Handle the load response
+                            onSettingsLoaded(settings);
+                        }, onError);
+                    }, onError);
+                }, onError);
+            }, onError);
+        }, onError);
+                            </code></pre>
+                        </div>
+                        <div class="card-footer">
+                            <div>Things to note</div>
+                            <ul>
+                                <li>The code indents with each callback</li>
+                                <li>The <code>onError</code> hander is passed in for <i>each</i> function call</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>Compare with the promiseified version:</p>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card code-sample-container">
+                        <div class="card-header">Promiseified Settings Manager Code</div>
+                        <div class="card-body">
+                            <pre><code class="prettyprint lang-js">
+// Promiseify a SettingsManager instance
+var promisifiedSettingsManager = Promiseify(new SettingsManager());
+
+promisifiedSettingsManager.load()
+.then(onSettingsLoaded)
+.then(() => promisifiedSettingsManager.save({one: 1, two: 'two'}))
+.then(onSettingsSaved)
+.then(() => promisifiedSettingsManager.load())
+.then(onSettingsLoaded)
+.then(() => promisifiedSettingsManager.save({three: 3, two: 2}))
+.then(onSettingsSaved)
+.then(() => promisifiedSettingsManager.load())
+.then(onSettingsLoaded)
+.catch(onError);
+                            </code></pre>
+                        </div>
+                        <div class="card-footer">
+                            <div>Things to note</div>
+                            <ul>
+                                <li>There is less code</li>
+                                <li>There are no code indents</li>
+                                <li>The code reads easily and logically</li>
+                                <li>The <code>onError</code> hander is passed in exactly once</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="dropdown-divider"></div>
+
+            <p>
+                This example shows code for both the standard usage as well as the promiseified usage, running next to each other. Notice how the
+                results are the same; this shows that the promisiefied version retains API functionality.
+            </p>
+
+            <!-- // A row to compare output between two operations -->
+            <div class="row">
+                <!-- // The "standard" settings-manager -->
+                <div class="col-sm-6 form-group">
+                    <label for="standard" class="col-sm-2 col-form-label">Standard</label>
+                    <textarea id="standard" rows="23" class="form-control"></textarea>
+                </div>
+                <!-- // The "promisified" settings-manager -->
+                <div class="col-sm-6 form-group">
+                    <label for="promise" class="col-sm-2 col-form-label">Promise</label>
+                    <textarea id="promise" rows="23" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="alert" class="alert alert-warning" role="alert">Running...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- // Load some code to make the code samples pretty -->
+        <script src="//cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+        <!-- // Import the example code -->
+        <script src="settings-manager-example.js" type="module"></script>
+
+    </body>
+</html>
