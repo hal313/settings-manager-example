@@ -1,6 +1,6 @@
 # [settings-manager-example](https://github.com/hal313/settings-manager-example)
 
-> A facade for user settings repositories.
+> Examples for using settings-manager with promisification.
 
 [![Build Status](http://img.shields.io/travis/hal313/settings-manager-example/master.svg?style=flat-square)](https://travis-ci.org/hal313/settings-manager-example)
 [![Dependency Status](http://img.shields.io/david/hal313/settings-manager-example.svg?style=flat-square)](https://david-dm.org/hal313/settings-manager-example)
