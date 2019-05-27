@@ -63,7 +63,7 @@ git checkout -b release/${NEXT_VERSION}
 
 ## Build, test and commit the dist
 npm run dist
-git add dist/
+git add docs/
 git commit --allow-empty -m 'Generated artifacts'
 
 ## Bump the patch version (and do not commit the changes)
